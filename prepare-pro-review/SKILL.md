@@ -24,6 +24,7 @@ Seek the best solution for the actual requirement across every mode and every ge
 - Do not use YAGNI to dismiss a credible correctness, security, privacy, recovery, or data-loss risk; addressing such a risk is a present need.
 - Compare credible alternatives and recommend the best one. Explain why it is superior for the current requirement, what tradeoffs it carries, and how elegance, YAGNI, and minimalism informed the judgment.
 - Defer a proposal or place it under `Do not pursue now` when it lacks a current justification, not merely because it would require meaningful change.
+- Apply the same standard to the review's own recommendations: instruct reviewers to propose the smallest revision that removes each failure and to make every field or step of any proposed template or procedure load-bearing. A recommendation can itself be over-engineered.
 
 ## Required outcome
 
@@ -31,7 +32,7 @@ Produce all of the following or report the exact blocker:
 
 - A clean, committed review target on `main`.
 - A successful push whose remote `main` SHA equals the local `main` SHA.
-- Two prompts for a narrow review or three prompts for a broad review. Never create one omnibus prompt or more than three.
+- One prompt when the target is small enough that partitioning would manufacture work, two for a narrow review, or three for a broad review. Never more than three.
 - A review mode, target, desired outcome, and constraints derived from the user's invocation and repeated in every prompt.
 - An explicit elegance, YAGNI, and minimalism instruction in every prompt, with a best-solution justification for every proposed fix, redesign, dependency, or feature.
 - Distinct primary ownership for every important concern in the selected review mode, with no material coverage gap across the pack.
@@ -57,11 +58,14 @@ $prepare-pro-review Perform a security review of authentication, authorization, 
 
 1. Find the repository root and read its applicable instructions.
 2. Inspect `git status`, the current branch, remotes, recent commits, diffs, and relevant project documentation.
-3. Convert the user's request into a review brief with four explicit fields:
-   - **Mode:** `general-audit`, `architecture`, `implementation`, `recommendations`, `security`, or `custom`.
+3. Convert the user's request into a review brief with these explicit fields:
+   - **Mode:** `general-audit`, `architecture`, `implementation`, `recommendations`, `security`, `prompt-system`, or `custom`.
    - **Target:** whole repository, current change, named subsystem, named workflow, or another concrete boundary.
    - **Desired outcome:** defects, architectural judgment, validation of behavior, proposed improvements, prioritized recommendations, or another stated result.
    - **Constraints:** always include elegance, YAGNI, and minimalism, plus priorities such as compatibility, security, performance, delivery horizon, or areas to exclude.
+   - **Established facts:** verified harness or environment facts reviewers must treat as given, gathered from the user and repository, so reviewers do not spend findings and uncertainties on questions the user can already answer.
+   - **Deliberate decisions:** design choices the user made intentionally. Every prompt must tell reviewers to challenge these only with concrete evidence that they fail their purpose.
+   - **Failures observed:** failure modes seen in real runs or prior reviews, so priorities are calibrated by evidence rather than plausibility. Record "none supplied" when absent.
 4. Preserve the user's explicit mode and wording. When no mode is given, default to `general-audit` and state that assumption in the handoff. Ask only if different interpretations would materially change the review.
 5. Record the starting branch and a comparison base before merging:
    - On a work branch, prefer its merge base with remote `main`.
@@ -112,7 +116,7 @@ Treat comprehensiveness as a pack-level requirement. Each prompt must answer a d
 
 Before writing prompts, create a small internal coverage map that assigns each required concern to one primary prompt. Permit secondary overlap only for cross-cutting evidence. Check the map for gaps and unnecessary duplication.
 
-Use three prompts for a whole-repository or otherwise broad review. Use two only when the target is narrow enough that three would manufacture work.
+Use three prompts for a whole-repository or otherwise broad review. Use two when the target is narrow enough that three would manufacture work. Use one only when the target is so small that even two would manufacture work, and state that judgment in the handoff.
 
 ### General audit
 
@@ -152,6 +156,15 @@ Review the future of the project rather than disguising suggestions as defects:
 2. **Implementation vulnerabilities:** input handling, injection, secrets, cryptography, dependencies, data exposure, concurrency, and unsafe failure behavior.
 3. **Defense and verification:** security tests, supply chain, configuration, monitoring, incident response, recovery, and residual risks.
 
+### Prompt-system review
+
+For a repository of prompts, skills, or agent instructions rather than executable code:
+
+1. **System design:** whether each prompt artifact earns its existence; responsibility boundaries; contradictions and gaps across artifacts; resilience against the failure modes the system exists to counter.
+2. **Instruction quality:** each artifact as received by the model that runs it — routing triggers, sentences that change behavior versus load, embedded templates and contracts, ambiguity, and vocabulary drift.
+
+Require every prompt to trace one realistic scenario end to end through the system before stating findings. Findings must quote exact current text and give exact replacement text. `Verification already run: none` is expected and truthful for prose-only repositories.
+
 ### Custom review
 
 Derive two or three orthogonal questions from the requested outcome. State why the partition is collectively sufficient. Do not silently turn a recommendation request into a defect audit or an architecture request into an implementation review.
@@ -179,6 +192,9 @@ Review objective: <the user's actual goal>
 Review-pack role: <N of total, with a one-line summary of every prompt's ownership>
 Review principle: Seek the best solution. Make elegance the key criterion, apply YAGNI, preserve minimalism, and do not optimize for patch size or least effort.
 Verification already run: <command and truthful result>
+Established facts: <verified facts to treat as given, or "none">
+Deliberate decisions: <intentional choices; challenge only with concrete evidence, or "none">
+Failures observed: <failure modes from real runs, or "none supplied">
 
 ## Your assigned scope
 <specific paths, subsystem, and concerns>
@@ -192,7 +208,7 @@ Verification already run: <command and truthful result>
 ## Task
 Inspect enough surrounding code to validate interactions, but spend the review budget on the assigned scope. Trace real control flow and data flow. Validate every finding, judgment, or recommendation against the exact commit. Be comprehensive inside the assigned lens, not across the other prompts' lenses.
 
-Seek the best solution throughout. For every proposed fix, redesign, dependency, abstraction, or feature, state the current evidence or use case, compare credible alternatives, and explain why the recommendation is the best overall choice. Make elegance, YAGNI, and minimalism explicit parts of the judgment. Minimalism means conceptual economy and absence of unjustified machinery; it does not mean fewer changed lines or less effort. Recommend a substantial change when it materially improves the result. Robustness must address credible current failure modes without becoming speculative future-proofing. Explicitly reject or defer unjustified additions.
+Seek the best solution throughout. For every proposed fix, redesign, dependency, abstraction, or feature, state the current evidence or use case, compare credible alternatives, and explain why the recommendation is the best overall choice. Make elegance, YAGNI, and minimalism explicit parts of the judgment. Minimalism means conceptual economy and absence of unjustified machinery; it does not mean fewer changed lines or less effort. Recommend a substantial change when it materially improves the result. Robustness must address credible current failure modes without becoming speculative future-proofing. Explicitly reject or defer unjustified additions. Apply the same elegance bar to your own recommendations: propose the smallest revision that removes each failure, and make every element of any proposed template or procedure load-bearing. For every finding, name the deliberate decision it touches or state that none applies, and show why the evidence clears that bar.
 
 Do not modify the repository. Do not give generic best practices, style nits, or unsupported redesigns. Do not broaden into work assigned to the other sessions. If source access is incomplete, state exactly what is missing and do not pretend to have reviewed it.
 
@@ -207,13 +223,16 @@ Choose the output contract by mode:
 - **General audit, implementation, or security:** require a concise verdict; at most 8 actionable findings ordered `P0`–`P3`; exact code evidence and impact; the best proposed fix with alternatives and tradeoffs; validation gaps; and an explicit no-findings statement when appropriate.
 - **Architecture:** require an architecture verdict; evidenced structural strengths and liabilities; violated or well-served quality attributes; elegant alternatives with tradeoffs; the recommended best direction; prioritized changes; migration implications; and validation gaps. Use severity only for actual architectural risks, not preferences, and reject extensibility without a present use case.
 - **Recommendations:** require a current-state assessment and at most 8 ranked recommendations. For each include repository evidence, present problem or opportunity, expected value, the recommended best change, credible alternatives, effort, risk, dependencies, migration or rollout, and how to validate value. Require a `Do not pursue now` section for ideas that fail YAGNI.
+- **Prompt-system:** require a verdict on the system's shape naming the single change that matters most; findings with exact quoted text, the operational failure caused, exact replacement text, and credible alternatives; sentences to delete outright as load, quoted exactly; a `Do not pursue now` section; and uncertainties.
 - **Custom:** derive an output contract that directly answers the requested decision, with evidence, best-solution reasoning, elegance and YAGNI analysis, prioritization, uncertainty, and next validation steps.
+
+In every mode, require each stated uncertainty to name the exact minimal test or evidence that would resolve it.
 
 ## 6. Verify and hand off
 
 Before finishing:
 
-1. Confirm there are exactly two or three prompt files.
+1. Confirm the number of prompt files matches the stated pack size (one to three).
 2. Search every prompt for the repository URL, `main`, and the full SHA.
 3. Confirm every prompt states the same review mode, target, objective, and pack size.
 4. Confirm the coverage map has no material gap for the selected mode and target.

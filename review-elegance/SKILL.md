@@ -1,51 +1,66 @@
 ---
 name: review-elegance
-description: Perform one bounded, independent review of a unit of implemented work with two lenses — does it actually work, and what can be deleted. Use when a brief invokes $review-elegance or assigns verification of changes against acceptance criteria. Verify by running things and tracing real flows, then hunt unjustified machinery. Seek the best solution using elegance, YAGNI, and minimalism as design principles, never patch size or least effort. Try to disprove completion rather than confirm it.
+description: Perform a bounded, read-only independent verification of one named implementation state against its mission record and acceptance criteria. Use when invoked as $review-elegance or assigned independent verification of implemented work. Test real behavior, trace affected flows, and identify materially unjustified machinery. Do not implement or edit.
 ---
 
 # Review for correctness, then elegance
 
-You review one unit of work, once, against the mission, scope, and
-acceptance criteria in your brief. If the brief lacks them, read `VISION.md`
-and the active openspec change before reviewing. Your posture: try to
-disprove completion.
+You review the exact implementation state named in your brief against the
+mission record and acceptance criteria it names. If either is missing or
+ambiguous, stop and state the missing input; do not guess which change is
+active. You are read-only. Try to disprove completion, not confirm it. A
+later brief may request review of an updated state; an earlier verdict
+never approves later changes.
 
 ## Lens 1 — Does it actually work?
 
 - Run it. Execute the acceptance checks and the relevant tests. Reproduce;
   never assume.
-- Trace the real control and data flow of the changed paths. Check the edge
-  cases this system can actually reach — not every conceivable input.
+- Trace the real control and data flow of the changed paths. Check the
+  edge cases this system can actually reach — not every conceivable input.
 - Verify integration: does it work with the code around it, or only in
-  isolation? Do specs, tests, and observed behavior still agree?
+  isolation? Do the mission record, baseline specs, tests, and observed
+  behavior still agree?
 
-## Lens 2 — What can be deleted?
+## Lens 2 — What machinery lacks a present responsibility?
 
-Hunt, in this order: components the acceptance criteria never needed;
-abstractions with a single implementation; options, flags, and parameters
-that hold one value; wrappers that only forward; error handling for states
-that cannot occur; dependencies doing what the platform already does;
-duplicated concepts under two names; comments explaining WHAT instead of WHY.
+Hunt for concepts, layers, options, dependencies, branches, wrappers, and
+duplicated representations with no current requirement, reachable use,
+independent invariant, or credible current risk to handle. A single
+implementation, wrapper, or comment is not a finding by itself — name the
+unnecessary responsibility or indirection it creates.
 
-The asymmetric rule: a finding that removes machinery needs no justification
-beyond "acceptance still passes". A finding that adds machinery must cite a
+A removal finding needs the absent present responsibility named and the
+acceptance checks still passing. A finding that adds machinery must cite a
 present requirement, a demonstrated failure, or a credible current risk —
 correctness, security, privacy, recovery, and data loss count; hypothetical
-futures do not. Do not pad the review with robustness theater.
-
-Where a materially better design exists, say so: recommend the rewrite and
-explain why it is the best overall solution, what it removes, and what it
-trades. Elegance is the criterion — never diff size or least effort.
+futures do not. Recommend SIMPLIFY only when the unjustified machinery
+materially increases conceptual or operational cost; omit minor
+preferences. Where a materially better design exists, recommend the
+rewrite — with the credible alternative and its tradeoff — and what it
+removes.
 
 ## Output
 
+    REVIEWED STATE: <commit or precise working-tree state>
+    MISSION RECORD: <exact path, or "none — AGENTS.md exception">
     VERDICT: APPROVE | SIMPLIFY | FIX
-    (FIX fails lens 1. SIMPLIFY works but must shrink or restructure.
-    APPROVE means ship.)
+    (FIX fails lens 1. SIMPLIFY works but carries materially unjustified
+    machinery. APPROVE means ship.)
 
-    Findings, ordered by leverage:
-    1. {file:line} — {issue, one sentence} → {the better, smaller alternative}
+    CHECKS:
+    - <command or traced flow → exact observed result>
 
-Evidence for every finding, pinned to the actual code. No style nits, no
-generic best practices, no unsupported redesigns. Every finding either fixes
-a real failure or leaves the system smaller and clearer.
+    FINDINGS, ordered by leverage:
+    1. <file:line> — <failure, or the machinery and its absent
+       responsibility>
+       Evidence: <actual code, behavior, or requirement>
+       Best change: <recommended correction>
+
+    UNVERIFIED:
+    - <anything material that could not be exercised, or "none">
+
+Evidence for every finding, pinned to the reviewed state. No style nits, no
+generic best practices, no unsupported redesigns. Every finding either
+fixes a real failure or removes machinery that lacks a present
+responsibility.

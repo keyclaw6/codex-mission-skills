@@ -4,18 +4,26 @@ Skills for GPT-5.6 Sol on Codex. They counter three failure modes in long
 agentic coding runs: over-engineering, losing the mission as context
 compacts, and stopping subagents before they finish.
 
-- `sentinel` — takes a mission from the user, launches an orchestrator in a
-  separate thread, checks in on a schedule, corrects course, verifies
-  completion.
-- `orchestrate-mission` — parent-led multi-subagent execution: spec-first
-  planning, repo-native state, elegance as the acceptance bar, patience
-  with running children.
-- `review-elegance` — bounded independent review: does it actually work,
-  and what can be deleted.
-- `prepare-pro-review` — publishes the repository and prepares bounded
-  review prompts for separate ChatGPT GPT-5.6 Sol Pro sessions.
+Runtime mission loop:
+
+    human ↔ sentinel → separate orchestrator thread → native children
+                           └→ independent review-elegance verifier
+
+- `sentinel` — optional detached supervisor: launches the orchestrator,
+  wakes on a scheduled heartbeat, compares progress with the named mission
+  record, and accepts or re-briefs the result.
+- `orchestrate-mission` — execution, integration, and evidence owner;
+  returns a completion candidate to its caller.
+- `review-elegance` — bounded, read-only independent verification of one
+  named implementation state.
+
+Optional external handoff:
+
+- `prepare-pro-review` — explicitly invoked publishing and review-pack
+  preparation for separate ChatGPT GPT-5.6 Sol Pro sessions. Not part of
+  ordinary mission completion.
 
 Each skill installs as `<skills-dir>/<name>/SKILL.md`. Projects using these
 skills follow [agent-first-project-template](https://github.com/keyclaw6/agent-first-project-template):
-human-owned `VISION.md`, OpenSpec changes with a definition of done, and
-`npm run check` as canonical verification.
+human-owned `VISION.md`, OpenSpec changes carrying a definition of done,
+and `npm run check` as canonical repository verification.

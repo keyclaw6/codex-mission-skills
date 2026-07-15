@@ -1,42 +1,50 @@
 ---
 name: orchestrate-mission
-description: Run a context-lean, parent-led multi-subagent mission in which the current chat keeps the mission, plan, decisions, and synthesis while direct subagents perform discovery, execution, and verification. Use when a brief invokes $orchestrate-mission or asks this chat to drive substantial work to completion through delegation. Extends lean orchestration with spec-first planning, repo-native state, compaction recovery, elegance as the acceptance bar, and patience with running children. Do not use for trivial one-step work.
+description: Execute and integrate a substantial coding mission through direct native subagents while this thread owns decomposition, repository integration, evidence, and the completion candidate. Use when invoked as $orchestrate-mission or when this thread is explicitly asked to delegate substantial work. Do not use for trivial one-step work or for detached supervision.
 ---
 
 # Orchestrate a mission
 
-You are the engineering lead. Your principal owns the goal; you own
-execution, integration, and judgment. This chat holds intent, planning,
-decisions, adjudication, and the final answer; direct subagents perform
-discovery, implementation, and independent verification.
+You are the engineering lead. The caller owns the mission, priorities, and
+authorization; you own execution, integration, evidence, and the completion
+candidate. This chat holds planning, decisions, adjudication, and
+synthesis; direct subagents perform discovery, implementation, and
+independent verification.
 
-## Repo-native state
+## Mission state
 
-The repository is the system of record: write anything a future turn needs
-into it as soon as you learn it.
+Follow `AGENTS.md` for repository truth, OpenSpec usage, code exploration,
+coding policy, and canonical verification.
 
-- Truth ranks: `VISION.md`, then `openspec/specs/`, then everything else.
-  Read `AGENTS.md` and `VISION.md` at mission start.
-- The active openspec change is the plan. Its purpose, goals and non-goals,
-  and definition of done are the mission's acceptance; tick the boxes as
-  evidence lands. Record hard-to-reverse decisions in its Design section.
-- After any compaction: re-read `VISION.md`, the active change proposal,
-  and the recent git log, then continue from there.
-- Decide, don't stall: for any question inside the mission, choose the
-  option that leaves the most elegant system and proceed. Ask
-  principal-level questions in this thread and keep working on other
-  tasks — the principal checks in periodically. Block only when the
-  mission itself is in question.
+- Use only the mission record named in the brief; never infer an "active"
+  change. If the brief asks you to create it, create it before
+  implementation, make its purpose and definition of done operationalize
+  the launch brief without narrowing it, and report its exact path in this
+  thread.
+- For a bug fix restoring an existing baseline requirement, or for
+  read-only work, follow the exception in `AGENTS.md`; do not invent a
+  proposal merely to run this skill.
+- Keep durable state only in the artifacts that already own it: the
+  proposal and delta specs, code, tests, configuration, and Git. Do not
+  create status, scratch, or handoff files to preserve chat context. Put
+  bulky transient logs and extracts in temporary or ignored files.
+- Record hard-to-reverse or genuinely surprising decisions in the
+  proposal's Design section. For any question inside the mission, choose
+  the option that leaves the clearest system and proceed; leave
+  caller-level questions in this thread and continue safe, unblocked work.
+  Stop only when the mission itself is unclear.
+- After compaction: re-read `AGENTS.md`, `VISION.md`, the named mission
+  record and its delta specs; inspect `git status`, the current diff, and
+  the recent log; resume from the unmet definition-of-done criteria.
 
-## Elegance is the acceptance bar
+## Plan without bloat
 
-Seek the best solution for the actual requirement and make elegance the key
-criterion: economy of concepts, coherent boundaries, direct data and
-control flow, strong invariants, minimal machinery. Minimalism is not patch
-size — rewrite or redesign whenever that leaves a materially smaller,
-clearer system. Unjustified code taxes every future change. Challenge
-premature abstractions, options, layers, services, and dependencies in your
-own plan before any child sees a brief.
+Before dispatching any writer, map every proposed abstraction, option,
+service, dependency, or compatibility layer to a current requirement or
+credible current risk; remove what has no such justification. Prefer the
+design with the fewest concepts that truly meets the requirement —
+rewriting what exists when that leaves a materially smaller, clearer
+system.
 
 ## Hold the architecture
 
@@ -53,7 +61,7 @@ own plan before any child sees a brief.
 
 ## Briefs and reports
 
-- A brief contains pointers — paths, URLs, spec and change slugs — never
+- A brief contains pointers — paths, specs, the mission record — never
   pasted file contents. Spawn children with minimal context inheritance.
 - Send a scout before broad discovery; use codebase-memory before crawling
   the repository yourself.
@@ -62,60 +70,82 @@ own plan before any child sees a brief.
 - Write one complete brief instead of steering with follow-ups; follow up
   only for new facts, changed requirements, or a real correction.
 
-## Patience
+## Waiting for children and commands
 
-Waiting is work. A quiet child is a working child.
-
-- Wait for children and long commands to finish. Never stop, restart, or
-  replace a child for being slow or silent, and do not poll it for status.
-- Give long commands generous timeouts up front; sleep through builds, test
-  suites, and CI rather than cancel mid-run. "It's taking a while" is not a
-  failure signal.
-- Intervene only when a child asks, hard-crashes, or provably loops — and
-  inspect its output before acting even then.
+Use the native blocking wait or completion mechanism. Silence and elapsed
+time alone are not failure signals. Do not cancel, restart, or replace a
+child merely because it is quiet, and do not send repetitive status
+requests. Intervene only when the child requests input, the tool reports a
+crash or failed completion, available traces show repeated non-progress, or
+an external prerequisite has definitively failed — and inspect the child's
+output before deciding to resume, correct, or reassign. Give long commands
+timeouts appropriate to the command; when the tool supports continued
+waiting, wait rather than restart.
 
 ## Run the workflow
 
-1. **Frame the mission.** Restate goal, done-criteria, constraints. Read
-   the repo instructions and relevant specs yourself.
-2. **Spec first.** Draft or update the openspec change with its definition
-   of done. Prefer the design with the fewest concepts that truly meets the
-   requirement.
-3. **Smallest useful team.** Scout, executor, verifier — omit any role
-   that adds nothing, and add a wave only when returned evidence requires
-   it. Dispatch one-shot briefs (contract below); parallelize only
-   non-overlapping scopes.
+1. **Frame.** Restate mission, acceptance floor, and constraints. Read
+   `AGENTS.md`, `VISION.md`, the mission record, and the relevant specs
+   yourself.
+2. **Record.** Create or update the mission record per Mission state.
+3. **Team.** Scout, executor, verifier — omit any role that adds nothing;
+   add a wave only when returned evidence requires it. Dispatch one-shot
+   briefs (contract below); parallelize only non-overlapping writes.
 4. **Integrate each wave.** Run the acceptance checks yourself, reconcile
-   contradictions, tick definition-of-done boxes, dispatch the next bounded
-   wave.
-5. **Verify independently.** For meaningful mutations, send a fresh child
-   with the $review-elegance contract, briefed from the goal and acceptance
-   criteria — not from the executor's conclusions — and told to try to
-   disprove completion.
-6. **Apply findings narrowly.** Fixes: always. Simplifications: by
-   default — removal needs no justification while acceptance still passes.
-   Recurring simplify findings mean over-building: pause feature work and
-   run a simplification pass against the definition of done.
-7. **Close from the parent.** Every definition-of-done box ticked with
-   evidence, `npm run check` passing, then report outcome, key decisions,
-   verification evidence, and real residual risk.
+   contradictions, tick definition-of-done boxes — only you mark them —
+   and dispatch the next bounded wave.
+5. **Verify independently.** For meaningful mutations, send a fresh
+   read-only child that loads $review-elegance, briefed from the mission
+   record and acceptance criteria — not from the executor's conclusions.
+6. **Adjudicate findings** against the mission record, the affected
+   requirements, and real control and data flow — never on the verdict
+   label alone. Correct evidenced failures. Accept simplifications that
+   remove presently unjustified machinery while every affected contract
+   still holds. Reject unsupported findings and record the decisive
+   evidence. After a correctness fix or a material design change, send a
+   fresh read-only verifier the updated state; after a mechanical
+   correction, rerun the acceptance checks.
+7. **Close.** Return the completion candidate (contract below) to the
+   caller. You do not issue the user-facing completion judgment, and you
+   never run finalization carrying `--human-approved` unless the caller
+   relays the human's explicit approval of that exact mission record.
 
 ## Child brief
 
     Mission: <one sentence>
+    Mission record: <exact proposal path, or "none — AGENTS.md exception">
     Role: <scout | executor | verifier>
+    Skill: <$review-elegance for a verifier; otherwise none>
+    Mode: <read-only | write>
     Goal: <one concrete outcome>
-    Owned scope: <files, component, question, or surface>
-    Source pointers: <paths, URLs, spec/change slugs; no copied bulk>
-    Constraints: <applicable rules, exclusions, authority boundary>
+    Owned writes: <exact files or surfaces; "none" for scout and verifier>
+    Source pointers: <paths, specs, proposal, tests; no pasted bulk>
+    Constraints: <rules, non-goals, exclusions, authority boundary>
     Acceptance: <commands, observable behavior, or evidence>
     Style: the smallest, clearest system that meets acceptance. Rewrite
-    over patch. Delete over add. Nothing speculative.
+    over patch, delete over add — while every named requirement and
+    surrounding contract still holds. Nothing speculative.
 
-    Work autonomously within this scope. Do not spawn subagents or modify
-    unrelated work. Return a compact report: outcome, files changed,
-    verification with exact results, blockers or decisions needed.
-    Reference paths for bulk evidence.
+    Work autonomously in this scope. The filesystem is shared: touch
+    nothing outside Owned writes. Do not spawn subagents. Do not edit the
+    mission record or mark definition-of-done items. Return: outcome,
+    files changed (must match Owned writes), exact commands with exact
+    results, blockers or decisions needed, paths to bulky evidence.
+
+## Completion candidate
+
+    COMPLETION CANDIDATE
+    Mission record: <exact path>
+    Outcome: <what now works>
+    Evidence: <criterion → observable evidence, covering the acceptance
+    floor and every definition-of-done box>
+    Verification: <exact command → exact result, including the canonical
+    repository check>
+    Independent review: <verdict; disposition of every finding; reviewed
+    state>
+    Repository state: <git status summary; commit SHA when committed>
+    Residual risk: <real remaining risk, or "none identified">
+    Human approval required: <the exact approval outstanding, or "none">
 
 ## Stop rules
 
@@ -124,7 +154,7 @@ Waiting is work. A quiet child is a working child.
 - If all work overlaps, use one executor plus one independent verifier
   rather than parallel writers.
 - If a child needs authority beyond the mission, that decision returns to
-  the parent — and to the principal when required.
+  the parent — and to the caller when required.
 - If agents disagree, inspect the smallest decisive evidence or send one
   adjudication task; never resolve by majority vote.
 - Never claim completion from executor confidence. Require observable
