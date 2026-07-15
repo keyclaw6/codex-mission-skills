@@ -1,6 +1,6 @@
 ---
 name: sentinel
-description: Supervise a long-running coding mission from a permanent user-facing thread. Use only when the user invokes $sentinel or explicitly asks for detached supervision: launch $orchestrate-mission in a separate top-level thread, wake on a scheduled heartbeat, compare progress with the named mission record, and accept or re-brief the result. Do not implement.
+description: Supervise a long-running coding mission from a permanent user-facing thread. Use only when the user invokes $sentinel or explicitly asks for detached supervision: launch $orchestrate-mission in a separate top-level thread, wake on a scheduled heartbeat, compare progress with the mission, and accept or re-brief the result. Do not implement.
 ---
 
 # Sentinel
@@ -12,9 +12,11 @@ watching, no work.
 ## 1. Take the mission
 
 Restate the ask as a mission: the outcome plus an acceptance floor of
-observable criteria drawn from the user and the repository. Read
-`VISION.md`; ask the user only what would materially change the outcome.
-Confirm the mission briefly, then launch.
+observable criteria drawn from the user and the repository. Ask the user
+only what would materially change the outcome. Collect any project
+conventions the user states — source-of-truth documents, spec system,
+canonical verification commands — to pass on verbatim. Confirm the mission
+briefly, then launch.
 
 ## 2. Launch the orchestrator
 
@@ -32,10 +34,12 @@ Start the orchestrator as a separate top-level thread:
     Non-goals and constraints:
     - {constraint or explicit exclusion}
 
-    Mission record: {exact openspec/changes/<slug>/proposal.md path — or
-    "Create one focused change under AGENTS.md rules and reply with its
-    exact proposal path before implementation." — or "none — AGENTS.md
-    exception" for baseline-restoring bug fixes and read-only work}
+    Project conventions: {the user's conventions, verbatim — or "follow
+    the repository's AGENTS.md"}
+
+    Mission record: {exact path of the repository document that carries
+    this mission's plan and completion criteria — or "create one and reply
+    with its exact path before implementation" — or "this brief"}
 
     The mission record may refine this brief but must not narrow or
     contradict it. You own execution: decide anything inside the mission
@@ -72,22 +76,17 @@ Send a message only when it changes what the orchestrator does next.
 
 ## 4. Accept completion
 
-A completion candidate is not completion. Read the mission record; check
-the evidence against every acceptance-floor criterion and every
-definition-of-done box; read the independent-review verdict and the
-disposition of its findings; verify the repository state; run the
-candidate's verification commands and the canonical repository check
-yourself. Then either accept and report to the user with evidence, or send
-one consolidated corrective re-brief tied to the unmet criteria.
+A completion candidate is not completion. Check the evidence against every
+acceptance-floor criterion and every completion criterion in the mission
+record; read the independent-review verdict and the disposition of its
+findings; verify the repository state; run the candidate's verification
+commands yourself. Then either accept and report to the user with
+evidence, or send one consolidated corrective re-brief tied to the unmet
+criteria.
 
-Implementation and verification are not human approval of an OpenSpec
-change. Never represent the change as approved, and never instruct
-finalization carrying `--human-approved`, unless the user has explicitly
-approved that exact mission record. When implementation is complete but
-approval is outstanding, tell the user exactly what to review and approve.
-After explicit approval, send the orchestrator one consolidated
-instruction: finalize the named change, rerun canonical verification,
-report the resulting repository state.
+Implementation and verification are not user approval. Never represent the
+work as approved by the user unless the user has explicitly approved it;
+when approval is outstanding, tell the user exactly what to review.
 
 ## 5. Report to the user
 

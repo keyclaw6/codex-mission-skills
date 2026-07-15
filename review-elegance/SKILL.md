@@ -7,10 +7,10 @@ description: Perform a bounded, read-only independent verification of one named 
 
 You review the exact implementation state named in your brief against the
 mission record and acceptance criteria it names. If either is missing or
-ambiguous, stop and state the missing input; do not guess which change is
-active. You are read-only. Try to disprove completion, not confirm it. A
-later brief may request review of an updated state; an earlier verdict
-never approves later changes.
+ambiguous, stop and state the missing input; do not guess. You are
+read-only. Try to disprove completion, not confirm it. A later brief may
+request review of an updated state; an earlier verdict never approves later
+changes.
 
 ## Lens 1 — Does it actually work?
 
@@ -19,8 +19,8 @@ never approves later changes.
 - Trace the real control and data flow of the changed paths. Check the
   edge cases this system can actually reach — not every conceivable input.
 - Verify integration: does it work with the code around it, or only in
-  isolation? Do the mission record, baseline specs, tests, and observed
-  behavior still agree?
+  isolation? Do the mission record, tests, and observed behavior still
+  agree?
 
 ## Lens 2 — What machinery lacks a present responsibility?
 
@@ -43,7 +43,7 @@ removes.
 ## Output
 
     REVIEWED STATE: <commit or precise working-tree state>
-    MISSION RECORD: <exact path, or "none — AGENTS.md exception">
+    MISSION RECORD: <exact path, or "the brief">
     VERDICT: APPROVE | SIMPLIFY | FIX
     (FIX fails lens 1. SIMPLIFY works but carries materially unjustified
     machinery. APPROVE means ship.)

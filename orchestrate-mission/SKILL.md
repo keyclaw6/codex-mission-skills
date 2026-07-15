@@ -13,29 +13,28 @@ independent verification.
 
 ## Mission state
 
-Follow `AGENTS.md` for repository truth, OpenSpec usage, code exploration,
-coding policy, and canonical verification.
+Follow the repository's `AGENTS.md` and any project conventions in the
+brief for source-of-truth documents, coding policy, and canonical
+verification.
 
-- Use only the mission record named in the brief; never infer an "active"
-  change. If the brief asks you to create it, create it before
-  implementation, make its purpose and definition of done operationalize
-  the launch brief without narrowing it, and report its exact path in this
-  thread.
-- For a bug fix restoring an existing baseline requirement, or for
-  read-only work, follow the exception in `AGENTS.md`; do not invent a
-  proposal merely to run this skill.
+- The brief is the mission. When it names a mission record document, that
+  document carries the plan and completion criteria: use only that exact
+  path — never infer an "active" one. When the brief asks you to create
+  it, create it before implementation, make it operationalize the brief
+  without narrowing it, and report its exact path in this thread.
 - Keep durable state only in the artifacts that already own it: the
-  proposal and delta specs, code, tests, configuration, and Git. Do not
-  create status, scratch, or handoff files to preserve chat context. Put
-  bulky transient logs and extracts in temporary or ignored files.
-- Record hard-to-reverse or genuinely surprising decisions in the
-  proposal's Design section. For any question inside the mission, choose
-  the option that leaves the clearest system and proceed; leave
-  caller-level questions in this thread and continue safe, unblocked work.
-  Stop only when the mission itself is unclear.
-- After compaction: re-read `AGENTS.md`, `VISION.md`, the named mission
-  record and its delta specs; inspect `git status`, the current diff, and
-  the recent log; resume from the unmet definition-of-done criteria.
+  mission record, code, tests, configuration, and Git. Do not create
+  status, scratch, or handoff files to preserve chat context. Put bulky
+  transient logs and extracts in temporary or ignored files.
+- Record hard-to-reverse or genuinely surprising decisions in the mission
+  record — or, when there is none, in this thread as they are made. For
+  any question inside the mission, choose the option that leaves the
+  clearest system and proceed; leave caller-level questions in this thread
+  and continue safe, unblocked work. Stop only when the mission itself is
+  unclear.
+- After compaction: re-read `AGENTS.md`, the brief's conventions, and the
+  mission record; inspect `git status`, the current diff, and the recent
+  log; resume from the unmet completion criteria.
 
 ## Plan without bloat
 
@@ -61,10 +60,10 @@ system.
 
 ## Briefs and reports
 
-- A brief contains pointers — paths, specs, the mission record — never
+- A brief contains pointers — paths, documents, the mission record — never
   pasted file contents. Spawn children with minimal context inheritance.
-- Send a scout before broad discovery; use codebase-memory before crawling
-  the repository yourself.
+- Send a scout before broad discovery; use the repository's code-
+  intelligence tooling before crawling it yourself.
 - Bulk output — logs, extracts, research notes — goes into files; children
   hand back paths plus a digest.
 - Write one complete brief instead of steering with follow-ups; follow up
@@ -85,15 +84,16 @@ waiting, wait rather than restart.
 ## Run the workflow
 
 1. **Frame.** Restate mission, acceptance floor, and constraints. Read
-   `AGENTS.md`, `VISION.md`, the mission record, and the relevant specs
-   yourself.
-2. **Record.** Create or update the mission record per Mission state.
+   `AGENTS.md`, the mission record, and whatever the brief's conventions
+   name as source of truth.
+2. **Record.** When the brief calls for a mission record, create or update
+   it per Mission state.
 3. **Team.** Scout, executor, verifier — omit any role that adds nothing;
    add a wave only when returned evidence requires it. Dispatch one-shot
    briefs (contract below); parallelize only non-overlapping writes.
 4. **Integrate each wave.** Run the acceptance checks yourself, reconcile
-   contradictions, tick definition-of-done boxes — only you mark them —
-   and dispatch the next bounded wave.
+   contradictions, update completion criteria in the mission record — only
+   you mark them — and dispatch the next bounded wave.
 5. **Verify independently.** For meaningful mutations, send a fresh
    read-only child that loads $review-elegance, briefed from the mission
    record and acceptance criteria — not from the executor's conclusions.
@@ -107,19 +107,19 @@ waiting, wait rather than restart.
    correction, rerun the acceptance checks.
 7. **Close.** Return the completion candidate (contract below) to the
    caller. You do not issue the user-facing completion judgment, and you
-   never run finalization carrying `--human-approved` unless the caller
-   relays the human's explicit approval of that exact mission record.
+   never represent the work as approved by the user on the caller's
+   behalf.
 
 ## Child brief
 
     Mission: <one sentence>
-    Mission record: <exact proposal path, or "none — AGENTS.md exception">
+    Mission record: <exact path, or "the launch brief">
     Role: <scout | executor | verifier>
     Skill: <$review-elegance for a verifier; otherwise none>
     Mode: <read-only | write>
     Goal: <one concrete outcome>
     Owned writes: <exact files or surfaces; "none" for scout and verifier>
-    Source pointers: <paths, specs, proposal, tests; no pasted bulk>
+    Source pointers: <paths, documents, tests; no pasted bulk>
     Constraints: <rules, non-goals, exclusions, authority boundary>
     Acceptance: <commands, observable behavior, or evidence>
     Style: the smallest, clearest system that meets acceptance. Rewrite
@@ -128,19 +128,19 @@ waiting, wait rather than restart.
 
     Work autonomously in this scope. The filesystem is shared: touch
     nothing outside Owned writes. Do not spawn subagents. Do not edit the
-    mission record or mark definition-of-done items. Return: outcome,
-    files changed (must match Owned writes), exact commands with exact
-    results, blockers or decisions needed, paths to bulky evidence.
+    mission record or mark completion criteria. Return: outcome, files
+    changed (must match Owned writes), exact commands with exact results,
+    blockers or decisions needed, paths to bulky evidence.
 
 ## Completion candidate
 
     COMPLETION CANDIDATE
-    Mission record: <exact path>
+    Mission record: <exact path, or "the launch brief">
     Outcome: <what now works>
     Evidence: <criterion → observable evidence, covering the acceptance
-    floor and every definition-of-done box>
-    Verification: <exact command → exact result, including the canonical
-    repository check>
+    floor and every completion criterion>
+    Verification: <exact command → exact result, including the
+    repository's canonical check when one exists>
     Independent review: <verdict; disposition of every finding; reviewed
     state>
     Repository state: <git status summary; commit SHA when committed>

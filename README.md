@@ -10,8 +10,8 @@ Runtime mission loop:
                            └→ independent review-elegance verifier
 
 - `sentinel` — optional detached supervisor: launches the orchestrator,
-  wakes on a scheduled heartbeat, compares progress with the named mission
-  record, and accepts or re-briefs the result.
+  wakes on a scheduled heartbeat, compares progress with the mission, and
+  accepts or re-briefs the result.
 - `orchestrate-mission` — execution, integration, and evidence owner;
   returns a completion candidate to its caller.
 - `review-elegance` — bounded, read-only independent verification of one
@@ -23,7 +23,9 @@ Optional external handoff:
   preparation for separate ChatGPT GPT-5.6 Sol Pro sessions. Not part of
   ordinary mission completion.
 
-Each skill installs as `<skills-dir>/<name>/SKILL.md`. Projects using these
-skills follow [agent-first-project-template](https://github.com/keyclaw6/agent-first-project-template):
-human-owned `VISION.md`, OpenSpec changes carrying a definition of done,
-and `npm run check` as canonical repository verification.
+The runtime skills are convention-agnostic. State a project's conventions
+in the mission prompt — source-of-truth documents, spec system, canonical
+checks — and the sentinel passes them through verbatim; the mission record
+generalizes to whatever repository document carries the plan and completion
+criteria, or the launch brief itself. Each skill installs as
+`<skills-dir>/<name>/SKILL.md`.
