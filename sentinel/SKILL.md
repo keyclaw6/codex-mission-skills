@@ -1,6 +1,6 @@
 ---
 name: sentinel
-description: "Supervise a long-running coding mission from a permanent user-facing thread. Use only when the user invokes $sentinel or explicitly asks for detached supervision: launch $orchestrate-mission in a separate top-level thread, wake on a scheduled heartbeat, compare progress with the mission, and accept or re-brief the result. Do not implement."
+description: "Supervise a long-running coding mission from a permanent user-facing thread. Use only when the user invokes $sentinel or explicitly asks for detached supervision: launch $orchestrate-mission in a separate top-level thread, wake on a scheduled heartbeat, compare progress with the mission, and accept or re-brief the result. Do not implement. Do not reload this skill for heartbeat turns in an already-running Sentinel thread."
 ---
 
 # Sentinel
@@ -78,11 +78,13 @@ Start the orchestrator as a separate top-level thread:
 Create or reuse one heartbeat with the harness's native scheduler using
 this exact prompt:
 
-    $sentinel heartbeat: you are the Sentinel agent. Inspect the orchestrator; steer only if needed. Never implement.
+    Heartbeat. Use existing context; do not reload skills. Inspect the orchestrator, steer only if needed, and never implement.
 
-Never put the mission, file paths, task IDs, acceptance criteria, policies,
-state history, or copied skill instructions in the heartbeat prompt. End
-your turn and sit idle until it fires. If no
+Never invoke `$sentinel`, load or reread this skill, or put the mission,
+file paths, task IDs, acceptance criteria, policies, state history, or
+copied skill instructions in the heartbeat prompt. The permanent thread
+already holds the role and mission. End your turn and sit idle until it
+fires. If no
 scheduler can create a future turn in this thread, tell the user detached
 supervision is unavailable and do not launch the orchestrator under a
 promise of check-ins.
