@@ -33,6 +33,15 @@ confirmed checkpoint and repository state; deferred decisions and
 blockers; and the next Sentinel action. Update it after a material event,
 not merely because an on-course heartbeat fired.
 
+Persist the mission goal and its state (`active` or `accepted`) in this
+file. Do not call `create_goal`, `update_goal`, or any goal-management tool
+for Sentinel supervision; the Sentinel must remain idle between heartbeats.
+Keep the external goal `active` through blockers, deferrals, compaction,
+and an orchestrator completion candidate. Mark it `accepted` only after
+the Sentinel has fully verified and accepted the mission under Section 4.
+Stop the heartbeat only on that accepted completion, or if the user
+explicitly cancels the mission.
+
 After compaction, read this file before acting, verify it against the live
 orchestrator and repository, and resume from the next action. The mission
 record, repository, and live orchestrator remain authoritative when the
@@ -97,7 +106,7 @@ Start the orchestrator as a separate top-level thread:
 Create or reuse one heartbeat with the harness's native scheduler using
 this exact prompt:
 
-    Heartbeat. Use existing context and external state; do not reload skills. Inspect the orchestrator, steer only if needed, and never implement.
+    Heartbeat. Use existing context and external state; do not reload skills or manage tool goals. Inspect the orchestrator, steer only if needed, and never implement.
 
 Never invoke `$sentinel`, load or reread this skill, or put the mission,
 file paths, task IDs, acceptance criteria, policies, state history, or
@@ -165,7 +174,8 @@ when approval is outstanding, tell the user exactly what to review.
 
 ## 5. Report to the user
 
-On accepted completion, stop the heartbeat and give the user a normal,
+On accepted completion, mark the external goal `accepted`, stop the
+heartbeat, and give the user a normal,
 self-contained completion report proportional to the mission. Start with
 `WORK.DONE`, but never use it as a bare exit token. Explain the result
 completely enough that the user does not need to ask for a status report.
