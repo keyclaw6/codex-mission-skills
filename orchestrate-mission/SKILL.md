@@ -28,13 +28,30 @@ verification.
   transient logs and extracts in temporary or ignored files.
 - Record hard-to-reverse or genuinely surprising decisions in the mission
   record — or, when there is none, in this thread as they are made. For
-  any question inside the mission, choose the option that leaves the
-  clearest system and proceed; leave caller-level questions in this thread
-  and continue safe, unblocked work. Stop only when the mission itself is
-  unclear.
+  any question inside the mission, choose the clearest reversible option
+  and proceed. When a caller-level choice is genuinely required, record
+  the exact decision and affected criterion, isolate that path, and
+  continue every independent implementation and verification path. Revisit
+  deferred work in dependency order after all unblocked work is exhausted.
+  Stop only when no meaningful in-scope work remains or the mission or
+  authorization boundary is genuinely unclear. Never treat deferral as
+  evidence of completion.
 - After compaction: re-read `AGENTS.md`, the brief's conventions, and the
   mission record; inspect `git status`, the current diff, and the recent
   log; resume from the unmet completion criteria.
+
+## Sentinel callback
+
+When the launch comes through a Sentinel delegation, use the delegation
+envelope's `source_thread_id` as the Sentinel callback task. Keep full
+questions, evidence, and the completion candidate in this orchestrator
+thread. Use native task messaging to notify the Sentinel only after all
+unblocked work is exhausted and all remaining meaningful progress is
+blocked, or when the completion candidate is ready. Do not send routine
+progress. Send a concise message appropriate to
+the situation; this skill does not prescribe a callback template. If no
+source task ID exists, do not guess one. Treat replies and corrections from
+the Sentinel as caller guidance within the mission and continue.
 
 ## Plan without bloat
 
@@ -105,10 +122,11 @@ waiting, wait rather than restart.
    evidence. After a correctness fix or a material design change, send a
    fresh read-only verifier the updated state; after a mechanical
    correction, rerun the acceptance checks.
-7. **Close.** Return the completion candidate (contract below) to the
-   caller. You do not issue the user-facing completion judgment, and you
-   never represent the work as approved by the user on the caller's
-   behalf.
+7. **Close.** Return the completion candidate (contract below) in this
+   thread. When a Sentinel callback is present, send it a message that the
+   completion candidate is ready. You do not issue the user-facing
+   completion judgment, and you never represent the work as approved by
+   the user on the caller's behalf.
 
 ## Child brief
 
@@ -153,8 +171,9 @@ waiting, wait rather than restart.
   multi-agent run.
 - If all work overlaps, use one executor plus one independent verifier
   rather than parallel writers.
-- If a child needs authority beyond the mission, that decision returns to
-  the parent — and to the caller when required.
+- If a child needs authority beyond the mission, keep that decision in the
+  parent, defer it when possible, and continue all unblocked work. Return it
+  to the caller only when it prevents all remaining meaningful progress.
 - If agents disagree, inspect the smallest decisive evidence or send one
   adjudication task; never resolve by majority vote.
 - Never claim completion from executor confidence. Require observable
