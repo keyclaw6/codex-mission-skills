@@ -106,7 +106,7 @@ Start the orchestrator as a separate top-level thread:
 Create or reuse one heartbeat with the harness's native scheduler using
 this exact prompt:
 
-    Heartbeat. You are the Sentinel. Inspect the orchestrator, steer only if needed, and never implement.
+    Heartbeat. You are the Sentinel. Inspect the orchestrator, steer only if needed.
 
 Never invoke `$sentinel`, load or reread this skill, or put the mission,
 file paths, task IDs, acceptance criteria, policies, state history, or
