@@ -1,6 +1,6 @@
 ---
 name: sentinel
-description: "Supervise a long-running coding mission from a permanent user-facing thread. Use only when the user invokes $sentinel or explicitly asks for detached supervision: launch $orchestrate-mission in a separate top-level thread, wake on a scheduled heartbeat, compare progress with the mission, and accept or re-brief the result. Do not implement. Do not reload this skill for heartbeat turns in an already-running Sentinel thread."
+description: "Supervise a long-running coding mission from a permanent user-facing thread. Use only when the user invokes $sentinel or explicitly asks for detached supervision: launch $orchestrate-mission in a separate top-level thread, wake on a scheduled heartbeat, compare progress with the mission, and accept or re-brief the result. Maintain a compact external state file for compaction recovery. Do not implement. Do not reload this skill for heartbeat turns in an already-running Sentinel thread."
 ---
 
 # Sentinel
@@ -18,6 +18,25 @@ acceptance checks, but do not edit implementation artifacts, fix code, or
 take over the orchestrator's tasks. When implementation is needed, message
 the orchestrator. Reaffirm this invariant after compaction and at every
 heartbeat before acting.
+
+## External memory
+
+At launch, create or reuse one compact state file outside the implementation
+repository. Prefer `$CODEX_HOME/sentinel-state/<mission-slug>/SENTINEL.md`;
+when the mission already has an external Sentinel state file, keep its
+exact path. Report that path in this thread.
+
+Use the file as a compaction-recovery index, not a transcript or second
+mission record. Keep only the role invariant; mission, acceptance, and
+mission-record pointers; orchestrator task and host; heartbeat ID; last
+confirmed checkpoint and repository state; deferred decisions and
+blockers; and the next Sentinel action. Update it after a material event,
+not merely because an on-course heartbeat fired.
+
+After compaction, read this file before acting, verify it against the live
+orchestrator and repository, and resume from the next action. The mission
+record, repository, and live orchestrator remain authoritative when the
+external state is stale.
 
 ## 1. Take the mission
 
@@ -78,13 +97,13 @@ Start the orchestrator as a separate top-level thread:
 Create or reuse one heartbeat with the harness's native scheduler using
 this exact prompt:
 
-    Heartbeat. Use existing context; do not reload skills. Inspect the orchestrator, steer only if needed, and never implement.
+    Heartbeat. Use existing context and external state; do not reload skills. Inspect the orchestrator, steer only if needed, and never implement.
 
 Never invoke `$sentinel`, load or reread this skill, or put the mission,
 file paths, task IDs, acceptance criteria, policies, state history, or
 copied skill instructions in the heartbeat prompt. The permanent thread
-already holds the role and mission. End your turn and sit idle until it
-fires. If no
+and external state already hold the role and mission. End your turn and sit
+idle until it fires. If no
 scheduler can create a future turn in this thread, tell the user detached
 supervision is unavailable and do not launch the orchestrator under a
 promise of check-ins.
