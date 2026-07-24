@@ -40,18 +40,37 @@ verification.
   mission record; inspect `git status`, the current diff, and the recent
   log; resume from the unmet completion criteria.
 
-## Sentinel callback
+## Meta Agent callback
 
-When the launch comes through a Sentinel delegation, use the delegation
-envelope's `source_thread_id` as the Sentinel callback task. Keep full
-questions, evidence, and the completion candidate in this orchestrator
-thread. Use native task messaging to notify the Sentinel only after all
-unblocked work is exhausted and all remaining meaningful progress is
-blocked, or when the completion candidate is ready. Do not send routine
-progress. Send a concise message appropriate to
-the situation; this skill does not prescribe a callback template. If no
-source task ID exists, do not guess one. Treat replies and corrections from
-the Sentinel as caller guidance within the mission and continue.
+When the launch comes through a Meta Agent delegation, use the delegation
+envelope's `source_thread_id` as the Meta Agent callback task. Keep full
+questions, implementation detail, and evidence in this orchestrator task;
+send only concise control-plane checkpoints.
+
+Before implementation, verify that `source_thread_id` is present and echo the
+verified callback task in `PLAN_READY`. If it is absent, stop and have the caller
+correct the launch; do not guess an ID or begin implementation.
+
+Before implementation, return `PLAN_READY` with the acceptance matrix,
+minimal architecture, critical path, milestone dependencies, high-risk
+failure modes, proof plan, independent-review points, authorization/cost
+limits, and duration bounds. Wait for Meta Agent approval.
+
+After approval, callback with exactly these kinds when applicable:
+
+- `MILESTONE_COMPLETE` after `BUILD`, `SIMULATE`, and `FREEZE`, including the
+  exact reviewed state and proof produced;
+- `LONG_COMMAND_STARTED` before a command expected to exceed 15 minutes,
+  including exact command, purpose, command-bound HEAD plus tree or worktree
+  fingerprint, start time, maximum expected runtime, timeout, combined-log path,
+  and exit-receipt path;
+- `LONG_COMMAND_FINISHED` with end time, real exit code, output/receipt hash,
+  and unchanged command-bound repository identity;
+- `BLOCKED` only after every meaningful unblocked path is exhausted;
+- `CANDIDATE_READY` with the completion contract below.
+
+Do not send routine status prose. Treat Meta Agent milestone decisions,
+recoveries, and corrections as caller guidance within the mission and continue.
 
 ## Plan without bloat
 
@@ -110,7 +129,9 @@ waiting, wait rather than restart.
    briefs (contract below); parallelize only non-overlapping writes.
 4. **Integrate each wave.** Run the acceptance checks yourself, reconcile
    contradictions, update completion criteria in the mission record — only
-   you mark them — and dispatch the next bounded wave.
+   you mark them — and dispatch the next bounded wave. When a Meta Agent
+   callback is present, send the required milestone checkpoint before crossing
+   into the next controlled phase.
 5. **Verify independently.** For meaningful mutations, send a fresh
    read-only child that loads $review-elegance, briefed from the mission
    record and acceptance criteria — not from the executor's conclusions.
@@ -123,8 +144,8 @@ waiting, wait rather than restart.
    fresh read-only verifier the updated state; after a mechanical
    correction, rerun the acceptance checks.
 7. **Close.** Return the completion candidate (contract below) in this
-   thread. When a Sentinel callback is present, send it a message that the
-   completion candidate is ready. You do not issue the user-facing
+   thread. When a Meta Agent callback is present, send `CANDIDATE_READY`. You
+   do not issue the user-facing
    completion judgment, and you never represent the work as approved by
    the user on the caller's behalf.
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Meta Agent"
+  short_description: "Control and verify long-running coding missions"
+  default_prompt: "Use $meta-agent to supervise this mission through bounded milestones, recovery, and independent acceptance."
