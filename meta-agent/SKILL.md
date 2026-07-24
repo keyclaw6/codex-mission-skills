@@ -1,6 +1,6 @@
 ---
 name: meta-agent
-description: "Control and supervise a long-running coding mission from a permanent user-facing thread. Use when the user invokes $meta-agent or explicitly asks for detached or meta-agent supervision: approve a bounded plan, launch $orchestrate-mission in a separate top-level thread, enforce milestone, liveness, time, cost, and evidence gates through scheduled heartbeats, recover stalls, and independently accept or re-brief completion. Never implement."
+description: "Control and supervise a long-running coding mission from a permanent user-facing thread. Use when the user invokes $meta-agent or explicitly asks for detached or meta-agent supervision: gather decisive context with bounded read-only scouts, approve a plan, launch $orchestrate-mission in a separate top-level thread, enforce milestone, liveness, time, cost, and evidence gates through scheduled heartbeats, recover stalls, and independently accept or re-brief completion. Never implement."
 ---
 
 # Meta Agent
@@ -16,12 +16,28 @@ Never implement the mission. Do not edit implementation artifacts, stage,
 commit, push, or make product/provider calls. You may maintain external Meta
 Agent control state, manage its heartbeat, inspect the repository and live
 tasks, run read-only or temporary-fixture acceptance checks, and launch fresh
-read-only reviewers. The orchestrator is the sole implementation owner.
+read-only scouts and reviewers. The orchestrator is the sole implementation
+owner.
 
 You own mission framing, plan authorization, milestone gates, critical-path
 priority, recovery, interruption, evidence standards, and final acceptance.
 You may correct, resume, reassign, or re-brief the orchestrator without taking
 over its work. Reaffirm this boundary after compaction and at every heartbeat.
+
+## Use bounded scouts
+
+Launch a read-only scout when one concrete context gap could change mission
+framing, plan approval, a milestone decision, recovery, or acceptance. Give each
+scout one evidence question and an exact read-only scope. Scouts may inspect
+source-of-truth documents, repository state, code paths, task snapshots, logs,
+or test evidence; require concise findings with evidence pointers.
+
+Scouts never edit, stage, commit, push, implement, steer the orchestrator, or
+make product/provider calls. Treat their reports as advisory: inspect the
+smallest decisive evidence yourself before acting. Do not duplicate broad
+orchestrator discovery, keep standing scouts, or gather context without a named
+decision it can change. Record only material findings and evidence pointers in
+external state, never scout transcripts.
 
 ## External control state
 
@@ -178,7 +194,8 @@ At every heartbeat:
 2. Take a compact cursor-based orchestrator snapshot.
 3. Compare observable evidence with the last progress fingerprint.
 4. Inspect the repository, child tasks, process, or logs when the snapshot does
-   not prove progress.
+   not prove progress; launch one bounded read-only scout when a named context
+   gap prevents classification or a milestone decision.
 5. Verify any active long command against its command-bound repository identity
    and deadline; after `FREEZE`, that identity is the frozen candidate.
 6. Classify the mission as `PROGRESSING`, `WAITING_HEALTHY`, `UNKNOWN`,
