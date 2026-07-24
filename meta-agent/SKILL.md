@@ -55,6 +55,7 @@ Keep the state compact and machine-readable. It MUST contain:
 
 - mission ID, status, scope hash, acceptance-criterion IDs, and mission-record
   pointer;
+- controller skill locator and last observed contract fingerprint;
 - orchestrator task ID, host, and last cursor;
 - heartbeat ID, target task, and interval;
 - repository path, branch, observed HEAD plus tree or complete worktree
@@ -175,16 +176,16 @@ Agent task, and record its ID. Check for conflicting or stale mission
 automations before creating another. Default to 20 minutes; shorten during
 recovery only when faster supervision materially helps.
 
-Use this prompt:
+Use only this wake prompt:
 
-    Heartbeat. You are the Meta Agent. Reload $meta-agent in full, then use the
-    external control state. Compare observable orchestrator and repository
-    evidence with the last checkpoint. Verify long-running commands and enforce
-    the next-proof deadline. Recover or re-brief on drift or stall; otherwise
-    stay silent. Never implement.
+    Heartbeat.
 
-Do not put mission details, file paths, task IDs, credentials, or copied skill
-text in the heartbeat prompt.
+Treat the heartbeat as a wake signal, not an instruction payload. Keep all
+control logic in this skill and compact external state. Load this skill when
+supervision starts; do not reload it on routine heartbeat wakes. After
+compaction, read external state first and reload this skill only if its contract
+is absent from current context. Do not add mission details, file paths, task
+IDs, credentials, or copied skill text to the heartbeat prompt.
 
 ### Heartbeat control loop
 
